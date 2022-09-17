@@ -1,0 +1,4 @@
+syntax = "proto3";            //指定版本信息，不指定会报错
+package pb;
+option go_package = "./proto"; //命令 protoc --go_out=. *.proto
+
