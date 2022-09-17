@@ -11,22 +11,16 @@ import (
 type Grid struct {
 	//格子ID
 	GID int
-
 	//格子左边界
 	MinX int
-
 	//格子右边界
 	MaxX int
-
 	//格子上边界
 	MinY int
-
 	//格子下边界
 	MaxY int
-
 	//当前格子内玩家或物体ID集合
 	playerIDs map[int]bool
-
 	//当前集合的保护锁
 	pIDLock sync.RWMutex
 }
@@ -49,7 +43,6 @@ func (g *Grid) Add(playerID int) {
 	defer g.pIDLock.Unlock()
 
 	g.playerIDs[playerID] = true
-
 }
 
 // Delete 给当前格子删除玩家

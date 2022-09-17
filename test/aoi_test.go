@@ -2,8 +2,8 @@ package test
 
 import (
 	"fmt"
+	"lib/mmo_game_zinx/core"
 	"testing"
-	"zinx/src/mmo_game_zinx/core"
 )
 
 func TestNewAOIManager(t *testing.T) {
