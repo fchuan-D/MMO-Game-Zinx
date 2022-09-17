@@ -1,5 +1,5 @@
 {
-    "Name": "MMOGame Zinx",
+    "Name": "MMO Game Zinx",
     "Host": "0.0.0.0",
     "TcpPort": 8999,
     "MaxConn": 3000,

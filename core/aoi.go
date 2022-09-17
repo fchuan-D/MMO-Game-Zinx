@@ -16,7 +16,7 @@ type AOIManager struct {
 	MaxY int
 	//Y方向格子数量
 	CntsY int
-	//当前区域中格子map.key = 格子ID
+	//当前区域中格子集合 map.key = 格子ID
 	Grids map[int]*Grid
 }
 
@@ -76,7 +76,7 @@ func (m *AOIManager) String() string {
 	return s
 }
 
-// GetSurroundGridsByGid 根据格子GID得到周围九宫格格子集合
+// GetSurroundGridsByGid 根据格子 GID得到周围九宫格格子集合
 func (m *AOIManager) GetSurroundGridsByGid(gid int) (grids []*Grid) {
 	//判断gid是否在AOIManager中
 	if _, ok := m.Grids[gid]; !ok {
@@ -124,14 +124,14 @@ func (m *AOIManager) GetSurroundGridsByGid(gid int) (grids []*Grid) {
 
 // GetGidByPos 通过x,y横纵轴坐标得到当前格子的 GID
 func (m *AOIManager) GetGidByPos(x, y float32) int {
-	idx := int(x) - m.MinX/m.gridWidth()
-	idy := int(y) - m.MinY/m.gridLength()
+	idx := (int(x) - m.MinX) / m.gridWidth()
+	idy := (int(y) - m.MinY) / m.gridLength()
 
 	return idy*m.CntsX + idx
 }
 
-// GetPidByPos 通过横纵轴坐标得到周边九宫格内全部 playerIDs
-func (m *AOIManager) GetPidByPos(x, y float32) (playerIDs []int) {
+// GetSurroundPidByPos 通过横纵轴坐标得到周边九宫格内全部 playerIDs
+func (m *AOIManager) GetSurroundPidByPos(x, y float32) (playerIDs []int) {
 	//获取当前坐标对应格子ID
 	gid := m.GetGidByPos(x, y)
 
@@ -142,12 +142,23 @@ func (m *AOIManager) GetPidByPos(x, y float32) (playerIDs []int) {
 	for _, grid := range grids {
 		playerIDs = append(playerIDs, grid.GetPlayerIDs()...)
 	}
-
-	return playerIDs
+	return
 }
 
-// AddToGridByPid 添加一个 playerID到一个格子中
-func (m *AOIManager) AddToGridByPid(pid, gid int) {
+// GetPidsByGID 通过 GID获取当前格子的全部playerID
+func (m *AOIManager) GetPidsByGID(gID int) (playerIDs []int) {
+	playerIDs = m.Grids[gID].GetPlayerIDs()
+	return
+}
+
+// AddPidToGridByGid 添加一个 playerID到一个格子中
+func (m *AOIManager) AddPidToGridByGid(pid, gid int) {
+	m.Grids[gid].Add(pid)
+}
+
+// AddPidToGridByPos 通过坐标将 playerID添加到对应格子中
+func (m *AOIManager) AddPidToGridByPos(pid int, x, y float32) {
+	gid := m.GetGidByPos(x, y)
 	m.Grids[gid].Add(pid)
 }
 
@@ -156,20 +167,14 @@ func (m *AOIManager) RemovePidByGid(pid, gid int) {
 	m.Grids[gid].Delete(pid)
 }
 
-// GetPidsByGid 通过 GID获取全部 playerID
-func (m *AOIManager) GetPidsByGid(gid int) (playerIDs []int) {
-	playerIDs = m.Grids[gid].GetPlayerIDs()
-	return playerIDs
-}
-
-// AddToGridByPos 通过坐标将 playerID添加到对应格子中
-func (m *AOIManager) AddToGridByPos(pid int, x, y float32) {
-	gid := m.GetGidByPos(x, y)
-	m.Grids[gid].Add(pid)
-}
-
 // RemovePidByPos 通过坐标将 playerID从一个格子中删除
 func (m *AOIManager) RemovePidByPos(pid int, x, y float32) {
 	gid := m.GetGidByPos(x, y)
 	m.Grids[gid].Delete(pid)
+}
+
+// GetPidsByGid 通过 GID获取全部 playerID
+func (m *AOIManager) GetPidsByGid(gid int) (playerIDs []int) {
+	playerIDs = m.Grids[gid].GetPlayerIDs()
+	return playerIDs
 }

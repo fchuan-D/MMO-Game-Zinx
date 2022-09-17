@@ -1,4 +1,48 @@
 syntax = "proto3";            //指定版本信息，不指定会报错
 package pb;
-option go_package = "./proto"; //命令 protoc --go_out=. *.proto
+option go_package = "/pb"; //命令 protoc --go_out=. *.proto
 
+// 同步玩家本次登录的ID(用来标识玩家), 玩家登陆之后，由Server端主动生成玩家ID发送给客户端
+message SyncPid{
+  int32 Pid=1;
+}
+//世界聊天
+message Talk{
+  string Content=1;
+}
+//移动的坐标数据
+message Position{
+  float X=1;
+  float Y=2;
+  float Z=3;
+  float V=4;
+}
+
+/*
+  ● 广播消息
+  ●  发起者： Server
+  ●  Tp: 1 世界聊天, 2 坐标, 3 动作, 4 移动之后坐标信息更新
+  ●  Pid: 玩家ID
+ */
+message BroadCast{
+  int32 Pid=1;
+  int32 Tp=2; // 1 世界聊天, 2 坐标, 3 动作, 4 移动之后坐标信息更新
+  oneof Data {
+    string Content=3;
+    Position P=4;
+    int32 ActionData=5;
+  }
+}
+
+/*
+  ● 同步周围的人位置信息(包括自己)
+  ●  发起者： Server
+  ●  ps: Player 集合,需要同步的玩家
+ */
+message SyncPlayers{
+  repeated Player ps=1;
+}
+message Player{
+  int32 Pid=1;
+  Position P=2;
+}
