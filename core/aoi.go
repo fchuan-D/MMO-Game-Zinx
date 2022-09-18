@@ -130,8 +130,8 @@ func (m *AOIManager) GetGidByPos(x, y float32) int {
 	return idy*m.CntsX + idx
 }
 
-// GetSurroundPidByPos 通过横纵轴坐标得到周边九宫格内全部 playerIDs
-func (m *AOIManager) GetSurroundPidByPos(x, y float32) (playerIDs []int) {
+// GetSurroundPidsByPos 通过横纵轴坐标得到周边九宫格内全部 playerIDs
+func (m *AOIManager) GetSurroundPidsByPos(x, y float32) (playerIDs []int) {
 	//获取当前坐标对应格子ID
 	gid := m.GetGidByPos(x, y)
 
@@ -145,8 +145,8 @@ func (m *AOIManager) GetSurroundPidByPos(x, y float32) (playerIDs []int) {
 	return
 }
 
-// GetPidsByGID 通过 GID获取当前格子的全部playerID
-func (m *AOIManager) GetPidsByGID(gID int) (playerIDs []int) {
+// GetPidsByGid 通过 GID获取当前格子的全部 playerID
+func (m *AOIManager) GetPidsByGid(gID int) (playerIDs []int) {
 	playerIDs = m.Grids[gID].GetPlayerIDs()
 	return
 }
@@ -171,10 +171,4 @@ func (m *AOIManager) RemovePidByGid(pid, gid int) {
 func (m *AOIManager) RemovePidByPos(pid int, x, y float32) {
 	gid := m.GetGidByPos(x, y)
 	m.Grids[gid].Delete(pid)
-}
-
-// GetPidsByGid 通过 GID获取全部 playerID
-func (m *AOIManager) GetPidsByGid(gid int) (playerIDs []int) {
-	playerIDs = m.Grids[gid].GetPlayerIDs()
-	return playerIDs
 }

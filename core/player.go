@@ -117,3 +117,87 @@ func (p *Player) Talk(content string) {
 		player.SendMsg(200, protoMsg)
 	}
 }
+
+// SyncSurround 同步周边玩家,广播当前玩家位置信息
+func (p *Player) SyncSurround(tp int32) {
+	//根据当前玩家位置获取周围玩家ID
+	pids := WorldMgrObj.AoiMgr.GetSurroundPidsByPos(p.X, p.Z)
+	players := make([]*Player, 0, len(pids))
+	for _, pid := range pids {
+		//得到周围玩家集合
+		players = append(players, WorldMgrObj.GetPlayerByPid(uint32(pid)))
+	}
+
+	//将当前玩家位置信息 通过 msgId = 200 发给周边玩家(让其他玩家看到自己)
+	//创建 MsgId = 200 的 proto数据
+	protoMsg := &pb.BroadCast{
+		Pid: int32(p.Pid),
+		Tp:  tp, //广播出生位置信息
+		Data: &pb.BroadCast_P{
+			P: &pb.Position{
+				X: p.X,
+				Y: p.Y,
+				Z: p.Z,
+				V: p.V,
+			},
+		},
+	}
+	for _, player := range players {
+		player.SendMsg(200, protoMsg)
+	}
+
+	//将周边玩家位置信息 通过 msgID = 202 发给当前玩家客户端(让自己看到其他玩家)
+	//创建 pb.Player切片
+	playersProtoMsg := make([]*pb.Player, 0, len(players))
+	//遍历周边玩家
+	for _, player := range players {
+		//创建一个 pb.player
+		p := &pb.Player{
+			Pid: int32(player.Pid),
+			P: &pb.Position{
+				X: player.X,
+				Y: player.Y,
+				Z: player.Z,
+				V: player.V,
+			},
+		}
+		playersProtoMsg = append(playersProtoMsg, p)
+	}
+
+	syncPlayersProtoMsg := &pb.SyncPlayers{
+		Ps: playersProtoMsg[:],
+	}
+
+	p.SendMsg(202, syncPlayersProtoMsg)
+}
+
+// UpdatePos 更新当前玩家位置信息,并同步通知周边玩家
+func (p *Player) UpdatePos(x, y, z, v float32) {
+	p.X = x
+	p.Y = y
+	p.Z = z
+	p.V = v
+	//同步通知周边玩家
+	p.SyncSurround(4)
+}
+
+// OffLine 玩家下线业务
+func (p *Player) OffLine() {
+	//得到当前所有玩家
+	players := WorldMgrObj.GetAllPlayer()
+
+	//创建 proto数据,当前玩家下线
+	protoMsg := &pb.SyncPid{
+		Pid: int32(p.Pid),
+	}
+
+	//广播给所有玩家
+	for _, player := range players {
+		player.SendMsg(201, protoMsg)
+	}
+
+	//将下线玩家移出 AoiMgr
+	WorldMgrObj.AoiMgr.RemovePidByPos(int(p.Pid), p.X, p.Z)
+	//将下线玩家移出 WorldMgr
+	WorldMgrObj.RemovePlayer(p)
+}

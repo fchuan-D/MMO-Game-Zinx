@@ -25,6 +25,9 @@ func OnConnectionAdd(conn ziface.IConnection) {
 	//将连接与当前玩家ID绑定
 	conn.SetProperty("pid", player.Pid)
 
+	//同步周边玩家,广播当前玩家位置信息
+	player.SyncSurround(2)
+
 	fmt.Println("playerID:", player.Pid, "Login...")
 }
 
@@ -36,10 +39,9 @@ func OnConnectionStop(conn ziface.IConnection) {
 	//获得下线玩家对象
 	player := core.WorldMgrObj.GetPlayerByPid(pid.(uint32))
 
-	//将下线玩家移出 WorldMgr
-	core.WorldMgrObj.RemovePlayer(player)
-
+	//玩家下线业务
 	fmt.Println("playerID:", pid, "Logout...")
+	player.OffLine()
 }
 
 func main() {
@@ -55,6 +57,7 @@ func main() {
 	*/
 	//世界聊天业务
 	s.AddRouter(2, &apis.WorldChatApi{})
+	s.AddRouter(3, &apis.MoveApi{})
 
 	//启动服务
 	s.Serve()
