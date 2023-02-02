@@ -2,7 +2,7 @@ package test
 
 import (
 	"fmt"
-	"lib/mmo_game_zinx/core"
+	"mmo_game_zinx/core"
 	"testing"
 )
 

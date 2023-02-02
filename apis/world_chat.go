@@ -3,10 +3,10 @@ package apis
 import (
 	"fmt"
 	"github.com/golang/protobuf/proto"
-	"lib/mmo_game_zinx/core"
-	"lib/mmo_game_zinx/pb/pb"
-	"lib/zinx/ziface"
-	"lib/zinx/znet"
+	"mmo_game_zinx/core"
+	"mmo_game_zinx/pb/pb"
+	"zinx/ziface"
+	"zinx/znet"
 )
 
 type WorldChatApi struct {

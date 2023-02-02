@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"lib/mmo_game_zinx/apis"
-	"lib/mmo_game_zinx/core"
-	"lib/zinx/ziface"
-	"lib/zinx/znet"
+	"mmo_game_zinx/apis"
+	"mmo_game_zinx/core"
+	"zinx/ziface"
+	"zinx/znet"
 )
 
 // OnConnectionAdd 客户端建立连接之后的 Hook

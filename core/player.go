@@ -3,10 +3,10 @@ package core
 import (
 	"fmt"
 	"github.com/golang/protobuf/proto"
-	"lib/mmo_game_zinx/pb/pb"
-	"lib/zinx/ziface"
 	"math/rand"
+	"mmo_game_zinx/pb/pb"
 	"sync"
+	"zinx/ziface"
 )
 
 // Player 玩家管理模块
@@ -20,7 +20,13 @@ type Player struct {
 }
 
 /*
+<<<<<<< HEAD
+Player ID生成器
+=======
+
 	Player ID生成器
+
+>>>>>>> f4e8fd5c9ad3365694baf6e6fdf77539d83c1dbd
 */
 var PidGen uint32 = 1 //玩家ID计数器
 var IdLock sync.Mutex //计数器加锁
@@ -45,8 +51,15 @@ func NewPlayer(conn ziface.IConnection) *Player {
 }
 
 /*
+<<<<<<< HEAD
+服务器向发送客户端消息
+将 pb的 protobuf数据序列化后再调用 Zinx的 SendMsg()
+=======
+
 	服务器向发送客户端消息
 	将 pb的 protobuf数据序列化后再调用 Zinx的 SendMsg()
+
+>>>>>>> f4e8fd5c9ad3365694baf6e6fdf77539d83c1dbd
 */
 func (p *Player) SendMsg(msgId uint32, data proto.Message) {
 	//将 proto Message结构体序列化

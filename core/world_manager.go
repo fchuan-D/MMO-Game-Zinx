@@ -4,7 +4,7 @@ import (
 	"sync"
 )
 
-//初始常量值
+// 初始常量值
 const (
 	AOI_MIN_X  = 0
 	AOI_MAX_X  = 400
@@ -27,7 +27,7 @@ type WorldManager struct {
 // WorldMgrObj WorldMgr 提供一个对外 WorldManager句柄
 var WorldMgrObj *WorldManager
 
-//初始化
+// 初始化
 func init() {
 	WorldMgrObj = &WorldManager{
 		Players: make(map[uint32]*Player),
